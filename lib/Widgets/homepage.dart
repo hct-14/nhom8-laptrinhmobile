@@ -10,11 +10,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<CongViec> congViecList = [
-    CongViec(work: 'Làm bài tập về nhà', deadline: '17-01-2002', done: true),
-    CongViec(work: 'Đi đá bóng', deadline: '17-01-2002', done: false),
-  ];
-  void addWork(String work, String deadline) {
+  List<CongViec> congViecList = [];
+  void addWork(String work, DateTime deadline) {
     final newWork = CongViec(work: work, deadline: deadline);
     setState(() {
       congViecList.add(newWork);
@@ -51,7 +48,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Schedule'),
+        title: Text('App công việc'),
+        actions: [
+          ElevatedButton(
+            onPressed: () => openAddWork(context),
+            child: const Icon(
+              Icons.add,
+              color: Colors.blue,
+            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+          ),
+        ],
       ),
       body: Container(
         alignment: Alignment.center,
@@ -68,19 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      persistentFooterButtons: <Widget>[
-        ElevatedButton(
-          onPressed: () => openAddWork(context),
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-          style: ElevatedButton.styleFrom(
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(24),
-          ),
-        ),
-      ], //dang nut bam hien thu o duoi goc man hinh
     );
   }
 }
