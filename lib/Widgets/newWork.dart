@@ -12,6 +12,7 @@ class NewWorkPage extends StatefulWidget {
 class _NewWorkState extends State<NewWorkPage> {
   TextEditingController _workController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
+  var dateValue;
   String _validate = '';
 
   @override
@@ -49,6 +50,7 @@ class _NewWorkState extends State<NewWorkPage> {
                     setState(() {
                       _dateController.text =
                           DateFormat('dd-MM-yyyy').format(pickedDate);
+                      dateValue = pickedDate;
                     });
                   }
                 }),
@@ -57,7 +59,7 @@ class _NewWorkState extends State<NewWorkPage> {
               onPressed: () {
                 if (_workController.text.isNotEmpty &&
                     _dateController.text.isNotEmpty) {
-                  widget.addWork(_workController.text, _dateController.text);
+                  widget.addWork(_workController.text, dateValue);
                   Navigator.of(context).pop();
                 } else {
                   setState(() {
