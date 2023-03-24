@@ -13,13 +13,26 @@ class CongViecList extends StatefulWidget {
 
 class _CongViecState extends State<CongViecList> {
   get child => null;
+  DateTime currentDate = DateTime.now();
+
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Colors.red;
+  }
 
   List<Widget> getList(context) {
     List<Widget> childs = widget.congViecList
         .map((elm) => Row(children: <Widget>[
               Container(
                   width: MediaQuery.of(context).size.width * 0.94,
-                  height: 130,
+                  height: 100,
                   margin: EdgeInsets.symmetric(
                     vertical: 10,
                     horizontal: 10,
@@ -28,10 +41,7 @@ class _CongViecState extends State<CongViecList> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5),
                     border: Border.all(
-                      color: elm.done
-                          ? Colors.green.withOpacity(0.6)
-                          : Colors.red.withOpacity(0.6),
-                      width: 2,
+                      width: 1,
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -44,21 +54,21 @@ class _CongViecState extends State<CongViecList> {
                   ),
                   padding: const EdgeInsets.only(
                       top: 5, bottom: 5, left: 10, right: 10),
-                  child: Column(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Column(
                         children: [
-                          Text(
-                            elm.work,
-                            style: elm.done == true
-                                ? TextStyle(
-                                    color: Colors.greenAccent,
-                                    decoration: TextDecoration.lineThrough,
-                                    fontSize: 20,
-                                  )
-                                : TextStyle(color: Colors.red, fontSize: 20),
+                          Checkbox(
+                            checkColor: Colors.white,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: elm.done,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                elm.done = value!;
+                              });
+                            },
                           ),
                           IconButton(
                             onPressed: () => widget.deleteWork(elm),
@@ -68,27 +78,59 @@ class _CongViecState extends State<CongViecList> {
                           )
                         ],
                       ),
-                      Text(
-                        'Ngày kêt thúc:' + elm.deadline,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                      Text(
-                        elm.done ? 'Đã hoàn thành' : 'Chưa hoàn thành',
-                        style: elm.done == true
-                            ? TextStyle(color: Colors.greenAccent)
-                            : TextStyle(color: Colors.red),
-                      ),
-                      if (!elm.done)
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ElevatedButton(
-                                onPressed: () => widget.handleWork(elm),
-                                child: Text('Done'),
-                              )
-                            ])
+                              Text(
+                                elm.work,
+                                style: elm.deadline.compareTo(currentDate) > 0
+                                    ? TextStyle(color: Colors.red, fontSize: 20)
+                                    : (elm.done == true
+                                        ? TextStyle(
+                                            color: Colors.greenAccent,
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                            fontSize: 20,
+                                          )
+                                        : TextStyle(
+                                            color: Colors.black, fontSize: 20)),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            'Ngày kêt thúc:' +
+                                DateFormat('dd-MM-yyyy').format(elm.deadline),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Text(
+                            elm.deadline.compareTo(currentDate) > 0 &&
+                                    elm.done == false
+                                ? 'Quá hạn'
+                                : (elm.done == true
+                                    ? 'Hoàn thành'
+                                    : 'Chưa hoàn thành'),
+                            style: elm.done == true
+                                ? TextStyle(
+                                    color: Colors.greenAccent, fontSize: 14)
+                                : TextStyle(color: Colors.red, fontSize: 14),
+                          ),
+                        ],
+                      )
+                      // if (!elm.done)
+                      //   Row(
+                      //       mainAxisAlignment: MainAxisAlignment.end,
+                      //       children: [
+                      //         ElevatedButton(
+                      //           onPressed: () => widget.handleWork(elm),
+                      //           child: Text('Done'),
+                      //         )
+                      //       ])
                     ],
                   )),
             ]))
