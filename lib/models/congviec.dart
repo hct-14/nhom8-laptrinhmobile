@@ -1,6 +1,6 @@
 class CongViec {
   final String work;
-  final String deadline;
+  final DateTime deadline;
   bool done;
 
   CongViec({
